@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Association - Événements</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <div class="logo-container">
+          <img src="assets/Logo/logo.jpg" alt="Logo" class="logo-image" />
+          <div class="logo">
+            <h1>Ligue Des Souvenirs</h1>
+          </div>
+        </div>
+        <div class="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="dons.html" class="donate-btn">Faire un don</a></li>
+          </ul>
+        </nav>
+        <div class="cart-icon">
+          <img
+            src="assets/Logo/shopping-cart.png"
+            alt="Panier"
+            class="cart-image"
+          />
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Section: Événements à venir -->
+      <section id="evenements-a-venir" class="events-section">
+        <div class="container">
+          <h2>Événements à venir</h2>
+          <div class="events-list">
+            <!-- Events will be loaded dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Événements solidaires -->
+      <section id="evenements-solidaires" class="events-section">
+        <div class="container">
+          <h2>Événements solidaires</h2>
+          <div class="events-list">
+            <!-- Events will be loaded dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Événements passés -->
+      <section id="evenements-passes" class="events-section">
+        <div class="container">
+          <h2>Événements passés</h2>
+          <div class="events-list">
+            <!-- Events will be loaded dynamically -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h3>Ligue Des Souvenirs</h3>
+            <p>123 Rue de l'Association<br />75000 Paris<br />France</p>
+          </div>
+          <div class="footer-column">
+            <h3>Liens rapides</h3>
+            <ul>
+              <li><a href="index.html">Accueil</a></li>
+              <li><a href="evenements.html">Événements</a></li>
+              <li><a href="boutique.html">Boutique</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="dons.html">Faire un don</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Nous suivre</h3>
+            <div class="social-links">
+              <a href="#"
+                ><img src="assets/Logo/Instagram.png" alt="Instagram"
+              /></a>
+              <a href="#"
+                ><img src="assets/Logo/Snap chat.png" alt="Snapchat"
+              /></a>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Ligue Des Souvenirs. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal d'inscription -->
+    <div id="inscription-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>S'inscrire à l'événement</h2>
+        <form id="inscription-form">
+          <input type="hidden" id="event-name" name="event-name" />
+          <div class="form-group">
+            <label for="nom">Nom Complet</label>
+            <input type="text" id="inscription-nom" name="nom" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="inscription-email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="inscription-telephone" name="telephone" />
+          </div>
+          <button type="submit" class="btn">Confirmer l'inscription</button>
+        </form>
+      </div>
+    </div>
+    <script src="js/database.js"></script>
+    <script src="js/main.js"></script>
+    <div id="album-modal" class="modal">
+      <div class="modal-content album-modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="album-title">Photos de l'événement</h2>
+        <div id="album-photos" class="album-photos-container">
+          <!-- Photos will be added dynamically -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

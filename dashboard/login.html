@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - Ligue Des Souvenirs</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <style>
+      .login-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .login-title {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .login-form .btn {
+        margin-top: 20px;
+      }
+
+      .error-message {
+        color: red;
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      .back-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2 class="login-title">Administration</h2>
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Connexion</button>
+        <div id="error-message" class="error-message"></div>
+      </form>
+      <div class="back-link">
+        <a href="../index.html">Retour au site</a>
+      </div>
+    </div>
+
+    <script src="../js/database.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Check if already authenticated
+        // if (typeof checkAdminAuth === "function") {
+        //   checkAdminAuth()
+        //     .then(() => {
+        //       // Already authenticated, redirect to dashboard
+        //       window.location.href = "index.html";
+        //     })
+        //     .catch(() => {
+        //       // Not authenticated, show login form
+        //       console.log("Not authenticated, showing login form");
+        //     });
+        // }
+
+        // Handle login form submission
+        const loginForm = document.getElementById("login-form");
+        const errorMessage = document.getElementById("error-message");
+
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          // Call the login API function
+          if (typeof adminLogin === "function") {
+            adminLogin({ username, password })
+              .then((response) => {
+                console.log("Login successful:", response);
+                window.location.href = "index.html";
+              })
+              .catch((error) => {
+                console.error("Login failed:", error);
+                errorMessage.textContent =
+                  "Identifiants incorrects. Veuillez réessayer.";
+              });
+          } else {
+            // Demo mode - accept any login with "admin" username
+            if (username === "admin") {
+              // Store demo authentication in localStorage
+              localStorage.setItem(
+                "demoAdminAuth",
+                JSON.stringify({
+                  username: username,
+                  role: "admin",
+                  timestamp: new Date().toISOString(),
+                })
+              );
+              window.location.href = "index.html";
+            } else {
+              errorMessage.textContent =
+                'Identifiants incorrects. En mode démo, utilisez "admin" comme nom d\'utilisateur.';
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

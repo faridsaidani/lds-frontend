@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Association - Faire un don</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <div class="logo-container">
+          <img src="assets/Logo/logo.jpg" alt="Logo" class="logo-image" />
+          <div class="logo">
+            <h1>Ligue Des Souvenirs</h1>
+          </div>
+        </div>
+        <div class="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="dons.html" class="donate-btn">Faire un don</a></li>
+          </ul>
+        </nav>
+        <div class="cart-icon">
+          <img
+            src="assets/Logo/shopping-cart.png"
+            alt="Panier"
+            class="cart-image"
+          />
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="dons-hero">
+        <div class="container">
+          <h2>Soutenez nos actions</h2>
+          <p class="subtitle">
+            Votre générosité nous permet d'agir concrètement auprès des
+            personnes dans le besoin.
+          </p>
+        </div>
+      </section>
+
+      <section id="types-dons">
+        <div class="container">
+          <div class="donation-types">
+            <div class="donation-type" id="money-donation">
+              <div class="donation-icon">
+                <img
+                  src="assets/Logo/Aide alimentaire.png"
+                  alt="Don d'argent"
+                />
+              </div>
+              <h3>Don financier</h3>
+              <p>
+                Votre soutien financier nous aide à mener nos actions au
+                quotidien.
+              </p>
+              <button class="btn donation-btn" data-type="money">
+                Je fais un don
+              </button>
+            </div>
+            <div class="donation-type" id="clothes-donation">
+              <div class="donation-icon">
+                <img
+                  src="assets/Logo/Don de vetements.png"
+                  alt="Don de vêtements"
+                />
+              </div>
+              <h3>Don de vêtements</h3>
+              <p>
+                Offrez une seconde vie à vos vêtements en les donnant à ceux qui
+                en ont besoin.
+              </p>
+              <button class="btn donation-btn" data-type="clothes">
+                Je fais un don
+              </button>
+            </div>
+            <div class="donation-type" id="food-donation">
+              <div class="donation-icon">
+                <img
+                  src="assets/Logo/Aide alimentaire.png"
+                  alt="Don alimentaire"
+                />
+              </div>
+              <h3>Don alimentaire</h3>
+              <p>
+                Participez à nos collectes alimentaires pour aider les plus
+                démunis.
+              </p>
+              <button class="btn donation-btn" data-type="food">
+                Je fais un don
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="impact">
+        <div class="container">
+          <h2>Votre impact</h2>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <div class="stat-number">500+</div>
+              <div class="stat-label">Repas distribués chaque semaine</div>
+            </div>
+            <div class="impact-stat">
+              <div class="stat-number">200+</div>
+              <div class="stat-label">Personnes habillées chaque mois</div>
+            </div>
+            <div class="impact-stat">
+              <div class="stat-number">50+</div>
+              <div class="stat-label">Bénévoles engagés</div>
+            </div>
+            <div class="impact-stat">
+              <div class="stat-number">1000+</div>
+              <div class="stat-label">Personnes aidées chaque année</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="testimonials">
+        <div class="container">
+          <h2>Ils témoignent</h2>
+          <div class="testimonials-container">
+            <div class="testimonial">
+              <div class="testimonial-text">
+                <p>
+                  "Grâce à l'association, j'ai pu retrouver un peu de dignité.
+                  Les bénévoles sont formidables, toujours à l'écoute et
+                  bienveillants."
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <p>- Marie, bénéficiaire</p>
+              </div>
+            </div>
+            <div class="testimonial">
+              <div class="testimonial-text">
+                <p>
+                  "Faire partie de cette association me permet d'avoir un impact
+                  concret sur la vie des gens. C'est une expérience très
+                  enrichissante."
+                </p>
+              </div>
+              <div class="testimonial-author">
+                <p>- Thomas, bénévole</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal pour le don financier -->
+    <div id="money-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Faire un don financier</h2>
+        <p>Choisissez le montant de votre don :</p>
+        <div class="donation-amounts">
+          <button class="amount-btn" data-amount="10">10 €</button>
+          <button class="amount-btn" data-amount="20">20 €</button>
+          <button class="amount-btn" data-amount="50">50 €</button>
+          <button class="amount-btn" data-amount="100">100 €</button>
+          <div class="custom-amount">
+            <input
+              type="number"
+              id="custom-amount"
+              placeholder="Autre montant"
+            />
+            <span>€</span>
+          </div>
+        </div>
+        <form id="donation-form">
+          <div class="form-group">
+            <label for="nom-donateur">Nom</label>
+            <input type="text" id="nom-donateur" name="nom" required />
+          </div>
+          <div class="form-group">
+            <label for="email-donateur">Email</label>
+            <input type="email" id="email-donateur" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="carte">Numéro de carte</label>
+            <input
+              type="text"
+              id="carte"
+              name="carte"
+              placeholder="1234 5678 9012 3456"
+              required
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiration">Date d'expiration</label>
+              <input
+                type="text"
+                id="expiration"
+                name="expiration"
+                placeholder="MM/AA"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input
+                type="text"
+                id="cvv"
+                name="cvv"
+                placeholder="123"
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn">Valider le don</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal pour le don de vêtements -->
+    <div id="clothes-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Don de vêtements</h2>
+        <p>Vous pouvez déposer vos vêtements à notre local :</p>
+        <div class="donation-info">
+          <p>
+            <strong>Adresse :</strong> 123 Rue de l'Association, 75000 Paris
+          </p>
+          <p><strong>Horaires :</strong> Du lundi au vendredi de 9h à 18h</p>
+        </div>
+        <p>
+          Ou remplissez le formulaire ci-dessous pour organiser une collecte à
+          domicile :
+        </p>
+        <form id="clothes-form">
+          <div class="form-group">
+            <label for="nom-vetements">Nom</label>
+            <input type="text" id="nom-vetements" name="nom" required />
+          </div>
+          <div class="form-group">
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" name="adresse" required />
+          </div>
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone" required />
+          </div>
+          <div class="form-group">
+            <label for="email-vetements">Email</label>
+            <input type="email" id="email-vetements" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="description-vetements">Description des vêtements</label>
+            <textarea
+              id="description-vetements"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Organiser une collecte</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal pour le don alimentaire -->
+    <div id="food-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Don alimentaire</h2>
+        <p>Vous pouvez déposer vos dons alimentaires à notre local :</p>
+        <div class="donation-info">
+          <p>
+            <strong>Adresse :</strong> 123 Rue de l'Association, 75000 Paris
+          </p>
+          <p><strong>Horaires :</strong> Du lundi au vendredi de 9h à 18h</p>
+        </div>
+        <p>Voici les produits dont nous avons le plus besoin :</p>
+        <ul class="needed-items">
+          <li>Conserves (légumes, poisson, viande)</li>
+          <li>Pâtes, riz, légumes secs</li>
+          <li>Huile, farine, sucre</li>
+          <li>Produits pour bébés</li>
+          <li>Produits d'hygiène</li>
+        </ul>
+        <p>
+          Pour les grandes quantités ou pour organiser une collecte,
+          contactez-nous :
+        </p>
+        <form id="food-form">
+          <div class="form-group">
+            <label for="nom-alimentaire">Nom</label>
+            <input type="text" id="nom-alimentaire" name="nom" required />
+          </div>
+          <div class="form-group">
+            <label for="email-alimentaire">Email</label>
+            <input type="email" id="email-alimentaire" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="message-alimentaire">Message</label>
+            <textarea
+              id="message-alimentaire"
+              name="message"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Envoyer</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h3>Ligue Des Souvenirs</h3>
+            <p>123 Rue de l'Association<br />75000 Paris<br />France</p>
+          </div>
+          <div class="footer-column">
+            <h3>Liens rapides</h3>
+            <ul>
+              <li><a href="index.html">Accueil</a></li>
+              <li><a href="evenements.html">Événements</a></li>
+              <li><a href="boutique.html">Boutique</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="dons.html">Faire un don</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Nous suivre</h3>
+            <div class="social-links">
+              <a href="#"
+                ><img src="assets/Logo/Instagram.png" alt="Instagram"
+              /></a>
+              <a href="#"
+                ><img src="assets/Logo/Snap chat.png" alt="Snapchat"
+              /></a>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Ligue Des Souvenirs. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+    <script src="js/database.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

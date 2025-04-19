@@ -1,0 +1,162 @@
+/* Responsive Design */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+  #qui-sommes-nous .container,
+  #engagement-local .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .text-content,
+  .image-content {
+    width: 100%;
+  }
+
+  .events-grid,
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For mobile phones */
+@media screen and (max-width: 768px) {
+  header .container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .events-grid,
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #qui-sommes-nous,
+  #engagement-local {
+    padding: 40px 0;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  .event-card,
+  .action-card {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+}
+
+/* Add these styles for better responsiveness */
+
+@media screen and (max-width: 1024px) {
+  .modal-content {
+    width: 90%;
+    margin: 5% auto;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .testimonials-container {
+    padding: 0 15px;
+  }
+
+  .impact-stats {
+    flex-direction: column;
+  }
+
+  .impact-stat {
+    padding: 15px 0;
+  }
+
+  .donation-amounts {
+    justify-content: center;
+  }
+
+  header {
+    padding-bottom: 10px;
+  }
+
+  .cart-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .event-details h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  section {
+    padding: 40px 0;
+  }
+
+  .donation-type {
+    padding: 20px 15px;
+  }
+
+  .donation-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+  }
+
+  .product-card {
+    margin-bottom: 15px;
+  }
+}
+
+/* Responsive Navigation */
+@media screen and (max-width: 768px) {
+  .menu-icon {
+    display: none;
+    cursor: pointer;
+  }
+
+  .menu-icon div {
+    width: 25px;
+    height: 3px;
+    background-color: var(--secondary-color);
+    margin: 5px 0;
+    transition: 0.4s;
+  }
+  nav ul {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: none;
+    text-align: center;
+  }
+
+  nav ul.active {
+    display: flex;
+  }
+
+  .cart-icon {
+    margin-right: 50px;
+  }
+}

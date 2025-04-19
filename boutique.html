@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Association - Boutique</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container navbar">
+        <div class="logo-container">
+          <img src="assets/Logo/logo.jpg" alt="Logo" class="logo-image" />
+          <div class="logo">
+            <h1>Ligue Des Souvenirs</h1>
+          </div>
+        </div>
+        <div class="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+            <li><a href="boutique.html">Boutique</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="dons.html" class="donate-btn">Faire un don</a></li>
+          </ul>
+        </nav>
+        <div class="cart-icon">
+          <img
+            src="assets/Logo/shopping-cart.png"
+            alt="Panier"
+            class="cart-image"
+          />
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="boutique">
+        <div class="container">
+          <h2>Notre boutique solidaire</h2>
+          <p class="subtitle">
+            Tous les bénéfices de nos ventes sont utilisés pour financer nos
+            actions solidaires.
+          </p>
+
+          <div class="product-filters">
+            <button class="filter-btn active" data-filter="all">
+              Tous les produits
+            </button>
+            <button class="filter-btn" data-filter="t-shirts">T-shirts</button>
+            <button class="filter-btn" data-filter="sweats">Sweats</button>
+            <button class="filter-btn" data-filter="accessoires">
+              Accessoires
+            </button>
+          </div>
+
+          <div class="products-grid">
+            <!-- Products will be loaded via JavaScript -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Votre panier</h2>
+        <div id="cart-items">
+          <!-- Cart items will be displayed here -->
+        </div>
+        <div id="cart-total">
+          <p>Total: <span>0.00 €</span></p>
+        </div>
+        <div class="cart-buttons">
+          <button id="empty-cart" class="btn btn-secondary">
+            Vider le panier
+          </button>
+          <button id="checkout" class="btn">Valider la commande</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-columns">
+          <div class="footer-column">
+            <h3>Ligue Des Souvenirs</h3>
+            <p>123 Rue de l'Association<br />75000 Paris<br />France</p>
+          </div>
+          <div class="footer-column">
+            <h3>Liens rapides</h3>
+            <ul>
+              <li><a href="index.html">Accueil</a></li>
+              <li><a href="evenements.html">Événements</a></li>
+              <li><a href="boutique.html">Boutique</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="dons.html">Faire un don</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Nous suivre</h3>
+            <div class="social-links">
+              <a href="#"
+                ><img src="assets/Logo/Instagram.png" alt="Instagram"
+              /></a>
+              <a href="#"
+                ><img src="assets/Logo/Snap chat.png" alt="Snapchat"
+              /></a>
+            </div>
+          </div>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2025 Ligue Des Souvenirs. Tous droits réservés.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/database.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
