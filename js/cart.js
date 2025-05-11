@@ -344,7 +344,25 @@ class ShoppingCart {
       alert("Votre panier est vide.");
       return;
     }
-
+    
+    // Check if Stripe is available
+    if (window.stripePayment) {
+      // Show Stripe payment modal with the cart items and total
+      window.stripePayment.showPaymentModal(this.items, this.total);
+      
+      // Hide cart modal
+      const cartModal = document.getElementById("cart-modal");
+      if (cartModal) {
+        cartModal.style.display = "none";
+      }
+    } else {
+      // Fallback to the old checkout method if Stripe is not available
+      this.legacyCheckout();
+    }
+  }
+  
+  // Rename the old checkout method to legacyCheckout
+  legacyCheckout() {
     // Get customer information
     const customerName = prompt("Votre nom:") || "Anonymous";
     const customerEmail = prompt("Votre email:") || "anonymous@example.com";
@@ -412,3 +430,68 @@ class ShoppingCart {
 document.addEventListener("DOMContentLoaded", () => {
   const cart = new ShoppingCart();
 });
+
+// Global cart instance for external access
+let globalCart;
+
+// Initialize the shopping cart
+document.addEventListener("DOMContentLoaded", () => {
+  globalCart = new ShoppingCart();
+});
+
+// Function to get cart items for external use (like Stripe)
+function getCartItems() {
+  return globalCart ? globalCart.items : 
+    JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+// Function to update cart icon
+function updateCartIcon() {
+  const cartCount = document.querySelector(".cart-count");
+  if (!cartCount) return;
+  
+  const items = JSON.parse(localStorage.getItem("cart")) || [];
+  const count = items.reduce((total, item) => total + item.quantity, 0);
+  cartCount.textContent = count;
+}
+
+// Global checkout function for the button
+function checkout() {
+  if (globalCart) {
+    globalCart.checkout();
+  } else {
+    // Fallback if cart not initialized
+    const items = getCartItems();
+    
+    if (items.length === 0) {
+      alert('Votre panier est vide.');
+      return;
+    }
+    
+    const totalPrice = items.reduce(
+      (total, item) => total + item.price * item.quantity, 
+      0
+    );
+    
+    if (window.stripePayment) {
+      window.stripePayment.showPaymentModal(items, totalPrice);
+    } else {
+      alert('Le système de paiement n\'est pas disponible actuellement.');
+    }
+  }
+}
+
+// Clear cart after successful payment
+function clearCart() {
+  if (globalCart) {
+    globalCart.emptyCart();
+  } else {
+    localStorage.removeItem('cart');
+    updateCartIcon();
+  }
+}
+
+// Expose functions to global scope
+window.checkout = checkout;
+window.clearCart = clearCart;
+window.getCartItems = getCartItems;

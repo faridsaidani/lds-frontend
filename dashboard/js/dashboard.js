@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeDashboard();
   } else {
     // No authentication, redirect to login
+    console.log("No authentication found. Redirecting to login.");
     window.location.href = "login.html";
   }
 
@@ -34,11 +35,32 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+const modals = {};
+
+function openModal(modalId) {
+  const modal = modals[modalId];
+  if (modal) {
+    modal.style.display = "block";
+  }
+}
+
+function closeModal(modal) {
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
 // Main dashboard initialization function
 function initializeDashboard() {
   // Navigation
   const navLinks = document.querySelectorAll(".dashboard-nav a");
   const sections = document.querySelectorAll(".dashboard-section");
+  
+  // Define modals variable here at the beginning
+  modals["add-event-modal"] = document.getElementById("add-event-modal");
+  modals["add-product-modal"] = document.getElementById("add-product-modal");
+  modals["view-message-modal"] = document.getElementById("view-message-modal");
+  modals["delete-confirmation-modal"] = document.getElementById('delete-confirmation-modal');
 
   navLinks.forEach((link) => {
     link.addEventListener("click", function (e) {
@@ -86,12 +108,8 @@ function initializeDashboard() {
   });
 
   // Modal handling
-  const modals = {
-    "add-event-modal": document.getElementById("add-event-modal"),
-    "add-product-modal": document.getElementById("add-product-modal"),
-    "view-message-modal": document.getElementById("view-message-modal"),
-  };
-
+  // The modals variable is now defined at the beginning of the function
+  
   // Open modal buttons
   document
     .getElementById("add-event-btn")
@@ -118,17 +136,6 @@ function initializeDashboard() {
       }
     }
   });
-
-  function openModal(modalId) {
-    const modal = modals[modalId];
-    if (modal) {
-      modal.style.display = "block";
-    }
-  }
-
-  function closeModal(modal) {
-    modal.style.display = "none";
-  }
 
   // Load dashboard data
   loadDashboardData();
@@ -240,7 +247,44 @@ function initializeDashboard() {
       const filterValue = this.value;
       loadRegistrations(filterValue);
     });
-}
+    // Add to initializeDashboard()
+// Add event listener for the confirm delete button
+document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+  const itemId = document.getElementById('delete-item-id').value;
+  const itemType = document.getElementById('delete-item-type').value;
+  
+  // Show loading state
+  this.textContent = 'Suppression...';
+  this.disabled = true;
+  
+  deleteItem(itemType, itemId)
+    .then(() => {
+      // Success - close modal
+      closeModal(document.getElementById('delete-confirmation-modal'));
+      // Show success message
+      let itemTypeText = 'Élément';
+      switch(itemType) {
+        case 'event': itemTypeText = 'Événement'; break;
+        case 'donation': itemTypeText = 'Don'; break;
+        case 'message': itemTypeText = 'Message'; break;
+        case 'registration': itemTypeText = 'Inscription'; break;
+        case 'product': itemTypeText = 'Produit'; break;
+      }
+      alert(`${itemTypeText} supprimé avec succès.`);
+    })
+    .catch(error => {
+      alert(`Erreur lors de la suppression: ${error.message}`);
+    })
+    .finally(() => {
+      // Reset button state
+      this.textContent = 'Supprimer';
+      this.disabled = false;
+    });
+});
+
+// Add global click handler for delete buttons
+document.addEventListener('click', handleDeleteClick);
+  }
 
 // Dashboard data loading functions
 function loadDashboardData() {
@@ -291,6 +335,7 @@ function loadOverviewStats() {
     // Calculate total financial donations
     getDonations()
       .then((donations) => {
+        console.log("Donations:", donations);
         const financialDonations = donations.filter((d) => d.type === "money");
         const total = financialDonations.reduce(
           (sum, donation) => sum + donation.amount,
@@ -512,6 +557,7 @@ function loadDonations(type = "") {
   if (typeof getDonations === "function") {
     getDonations()
       .then((donations) => {
+        console.log(donations)
         // Filter by type if specified
         if (type) {
           donations = donations.filter((d) => d.type === type);
@@ -931,8 +977,10 @@ function formatEventType(type) {
 function formatDonationType(type) {
   switch (type) {
     case "money":
+    case "monetary":
       return "Financier";
     case "clothes":
+    case "clothing":
       return "Vêtements";
     case "food":
       return "Alimentaire";
@@ -1052,4 +1100,265 @@ function groupByMonth(items) {
   });
 
   return { labels, data, amounts };
+}
+
+// Replace the handleDeleteClick function with this improved version
+
+// Delete item handler
+// Update the handleDeleteClick function to include registrations and products
+
+function handleDeleteClick(e) {
+  if (!e.target.classList.contains('btn-delete')) return;
+  
+  const itemId = e.target.getAttribute('data-id');
+  let itemType = '';
+  let itemName = '';
+  
+  // Get the closest row and table
+  const row = e.target.closest('tr');
+  if (!row) {
+    console.error('Could not find row element for delete button');
+    return;
+  }
+  
+  const table = row.closest('table');
+  if (!table) {
+    console.error('Could not find table element for delete button');
+    return;
+  }
+  
+  // Determine item type based on table ID
+  const tableId = table.id;
+  
+  if (tableId === 'events-table' || table.closest('#events-section')) {
+    itemType = 'event';
+    // Try to get event name from row
+    if (row.cells && row.cells.length > 1) {
+      itemName = row.cells[1].textContent; // Event name is in second column
+    }
+  } else if (tableId === 'donations-table' || table.closest('#donations-section')) {
+    itemType = 'donation';
+    // Get donation info if possible
+    if (row.cells && row.cells.length > 2) {
+      const donorName = row.cells[2].textContent; // Donor name is in third column
+      const donationType = row.cells[1].textContent; // Type is in second column
+      itemName = `${donationType} de ${donorName}`;
+    }
+  } else if (tableId === 'messages-table' || table.closest('#messages-section')) {
+    itemType = 'message';
+    // Get message info if possible
+    if (row.cells && row.cells.length > 3) {
+      const sender = row.cells[1].textContent; // Sender is in second column
+      const subject = row.cells[3].textContent; // Subject is in fourth column
+      itemName = `message de ${sender} (${subject})`;
+    }
+  } else if (tableId === 'registrations-table' || table.closest('#registrations-section')) {
+    itemType = 'registration';
+    // Get registration info if possible
+    if (row.cells && row.cells.length > 2) {
+      const personName = row.cells[2].textContent; // Person name is in third column
+      const eventName = row.cells[1].textContent; // Event name is in second column
+      itemName = `inscription de ${personName} à "${eventName}"`;
+    }
+  } else if (tableId === 'products-table' || table.closest('#products')) {
+    itemType = 'product';
+    // Get product info if possible
+    if (row.cells && row.cells.length > 2) {
+      const productName = row.cells[2].textContent; // Product name is in third column
+      itemName = `produit "${productName}"`;
+    }
+  } else {
+    // For debugging purposes, log what table we found
+    console.warn('Could not determine item type for deletion', {
+      tableId,
+      closestSectionId: table.closest('section')?.id,
+      buttonParents: Array.from(e.target.parentElement.classList),
+      rowHTML: row.innerHTML.substring(0, 100) + '...'
+    });
+    
+    // As a fallback, try to detect type from the nearby elements or context
+    if (window.location.hash === '#events-section' || document.querySelector('#events-section.active')) {
+      itemType = 'event';
+    } else if (window.location.hash === '#donations-section' || document.querySelector('#donations-section.active')) {
+      itemType = 'donation';
+    } else if (window.location.hash === '#messages-section' || document.querySelector('#messages-section.active')) {
+      itemType = 'message';
+    } else if (window.location.hash === '#registrations-section' || document.querySelector('#registrations-section.active')) {
+      itemType = 'registration';
+    } else if (window.location.hash === '#shop' || document.querySelector('#shop.active')) {
+      itemType = 'product';
+    } else {
+      alert('Impossible de déterminer le type d\'élément à supprimer.');
+      return;
+    }
+  }
+  
+  console.log(`Preparing to delete ${itemType} with ID ${itemId}`);
+  
+  // Set confirmation message
+  const message = itemName 
+    ? `Êtes-vous sûr de vouloir supprimer ${
+        itemType === 'event' ? 'l\'événement' : 
+        itemType === 'donation' ? 'le don' : 
+        itemType === 'message' ? 'le message' :
+        itemType === 'registration' ? 'l\'inscription' :
+        itemType === 'product' ? 'le produit' : 'cet élément'
+      } "${itemName}" ?`
+    : `Êtes-vous sûr de vouloir supprimer cet élément ?`;
+    
+  document.getElementById('delete-confirmation-message').textContent = message;
+  
+  // Set hidden input values
+  document.getElementById('delete-item-id').value = itemId;
+  document.getElementById('delete-item-type').value = itemType;
+  
+  // Show modal
+  openModal('delete-confirmation-modal');
+}
+
+// Delete an event
+function deleteEvent(eventId) {
+  // First check if we have the delete function available
+  if (typeof deleteEventApi !== 'function') {
+    return Promise.reject(new Error('API function deleteEvent is not available'));
+  }
+  
+  return deleteEventApi(eventId);
+}
+
+// Delete a donation
+function deleteDonation(donationId) {
+  // First check if we have the delete function available
+  if (typeof deleteDonationApi !== 'function') {
+    return Promise.reject(new Error('API function deleteDonation is not available'));
+  }
+  
+  return deleteDonationApi(donationId);
+}
+
+// Delete a message
+function deleteMessage(messageId) {
+  // First check if we have the delete function available
+  if (typeof deleteMessageApi !== 'function') {
+    return Promise.reject(new Error('API function deleteMessage is not available'));
+  }
+  
+  return deleteMessageApi(messageId);
+}
+
+
+function deleteItem(itemType, itemId) {
+  console.log(`🗑️ Deleting ${itemType} with ID: ${itemId}`);
+  
+  let deleteFunc;
+  
+  switch(itemType) {
+    case 'event':
+      deleteFunc = deleteEvent;
+      break;
+    case 'donation':
+      deleteFunc = deleteDonation;
+      break;
+    case 'message':
+      deleteFunc = deleteMessage;
+      break;
+    case 'registration':
+      deleteFunc = deleteRegistration;
+      break;
+    case 'product':
+      deleteFunc = deleteProduct;
+      break;
+    default:
+      console.error(`Unknown item type: ${itemType}`);
+      return Promise.reject(new Error('Unknown item type'));
+  }
+  
+  if (typeof deleteFunc !== 'function') {
+    console.error(`Delete function for ${itemType} is not available`);
+    return Promise.reject(new Error(`API function for deleting ${itemType} is not available`));
+  }
+  
+  return deleteFunc(itemId)
+    .then(response => {
+      console.log(`✅ ${itemType} deleted successfully:`, response);
+      
+      // Reload data based on what was deleted
+      switch(itemType) {
+        case 'event':
+          loadEvents();
+          break;
+        case 'donation':
+          loadDonations();
+          break;
+        case 'message':
+          loadMessages();
+          break;
+        case 'registration':
+          loadRegistrations();
+          break;
+        case 'product':
+          loadProducts();
+          break;
+      }
+      
+      // Reload overview stats
+      loadOverviewStats();
+      
+      return response;
+    })
+    .catch(error => {
+      console.error(`❌ Error deleting ${itemType}:`, error);
+      throw error;
+    });
+}
+
+// Replace the three problematic delete functions with these versions:
+
+// Delete an event
+function deleteEvent(eventId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteEventApi !== 'function') {
+    return Promise.reject(new Error('API function deleteEventApi is not available'));
+  }
+  
+  return deleteEventApi(eventId);
+}
+
+// Delete a donation
+function deleteDonation(donationId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteDonationApi !== 'function') {
+    return Promise.reject(new Error('API function deleteDonationApi is not available'));
+  }
+  
+  return deleteDonationApi(donationId);
+}
+
+// Delete a message
+function deleteMessage(messageId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteMessageApi !== 'function') {
+    return Promise.reject(new Error('API function deleteMessageApi is not available'));
+  }
+  
+  return deleteMessageApi(messageId);
+}
+
+function deleteRegistration(registrationId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteRegistrationApi !== 'function') {
+    return Promise.reject(new Error('API function deleteRegistrationApi is not available'));
+  }
+  
+  return deleteRegistrationApi(registrationId);
+}
+
+// Delete a product
+function deleteProduct(productId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteProductApi !== 'function') {
+    return Promise.reject(new Error('API function deleteProduct is not available'));
+  }
+  
+  return deleteProductApi(productId);
 }

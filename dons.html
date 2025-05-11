@@ -23,11 +23,11 @@
         </div>
         <nav>
           <ul>
-            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="index.html">Accueil</a></li>
             <li><a href="evenements.html">Événements</a></li>
             <li><a href="boutique.html">Boutique</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="dons.html" class="donate-btn">Faire un don</a></li>
+            <li><a href="dons.html" class="active donate-btn">Faire un don</a></li>
           </ul>
         </nav>
         <div class="cart-icon">
@@ -42,6 +42,7 @@
     </header>
 
     <main>
+      <!-- Hero section with background image set in CSS -->
       <section id="dons-hero">
         <div class="container">
           <h2>Soutenez nos actions</h2>
@@ -52,20 +53,23 @@
         </div>
       </section>
 
+      <!-- Donation types section -->
       <section id="types-dons">
         <div class="container">
+          <h2 class="section-title">Choisissez votre type de don</h2>
           <div class="donation-types">
             <div class="donation-type" id="money-donation">
               <div class="donation-icon">
                 <img
                   src="assets/Logo/Aide alimentaire.png"
                   alt="Don d'argent"
+                  class="donation-icon"
                 />
               </div>
               <h3>Don financier</h3>
               <p>
                 Votre soutien financier nous aide à mener nos actions au
-                quotidien.
+                quotidien et à financer nos projets d'aide aux personnes démunies.
               </p>
               <button class="btn donation-btn" data-type="money">
                 Je fais un don
@@ -76,12 +80,13 @@
                 <img
                   src="assets/Logo/Don de vetements.png"
                   alt="Don de vêtements"
+                  class="donation-icon"
                 />
               </div>
               <h3>Don de vêtements</h3>
               <p>
                 Offrez une seconde vie à vos vêtements en les donnant à ceux qui
-                en ont besoin.
+                en ont besoin. Nous les redistribuons aux personnes défavorisées.
               </p>
               <button class="btn donation-btn" data-type="clothes">
                 Je fais un don
@@ -92,12 +97,13 @@
                 <img
                   src="assets/Logo/Aide alimentaire.png"
                   alt="Don alimentaire"
+                  class="donation-icon"
                 />
               </div>
               <h3>Don alimentaire</h3>
               <p>
                 Participez à nos collectes alimentaires pour aider les plus
-                démunis.
+                démunis. Vos dons alimentaires sont essentiels pour nos banques alimentaires.
               </p>
               <button class="btn donation-btn" data-type="food">
                 Je fais un don
@@ -107,9 +113,11 @@
         </div>
       </section>
 
+      <!-- Impact section with statistics -->
       <section id="impact">
         <div class="container">
           <h2>Votre impact</h2>
+          <p class="subtitle">Grâce à votre générosité, nous avons pu accomplir:</p>
           <div class="impact-stats">
             <div class="impact-stat">
               <div class="stat-number">500+</div>
@@ -131,6 +139,7 @@
         </div>
       </section>
 
+      <!-- Testimonials section -->
       <section id="testimonials">
         <div class="container">
           <h2>Ils témoignent</h2>
@@ -138,9 +147,9 @@
             <div class="testimonial">
               <div class="testimonial-text">
                 <p>
-                  "Grâce à l'association, j'ai pu retrouver un peu de dignité.
+                  Grâce à l'association, j'ai pu retrouver un peu de dignité.
                   Les bénévoles sont formidables, toujours à l'écoute et
-                  bienveillants."
+                  bienveillants.
                 </p>
               </div>
               <div class="testimonial-author">
@@ -150,9 +159,9 @@
             <div class="testimonial">
               <div class="testimonial-text">
                 <p>
-                  "Faire partie de cette association me permet d'avoir un impact
+                  Faire partie de cette association me permet d'avoir un impact
                   concret sur la vie des gens. C'est une expérience très
-                  enrichissante."
+                  enrichissante.
                 </p>
               </div>
               <div class="testimonial-author">
@@ -180,6 +189,7 @@
               type="number"
               id="custom-amount"
               placeholder="Autre montant"
+              min="1"
             />
             <span>€</span>
           </div>
@@ -193,39 +203,22 @@
             <label for="email-donateur">Email</label>
             <input type="email" id="email-donateur" name="email" required />
           </div>
-          <div class="form-group">
-            <label for="carte">Numéro de carte</label>
-            <input
-              type="text"
-              id="carte"
-              name="carte"
-              placeholder="1234 5678 9012 3456"
-              required
-            />
-          </div>
-          <div class="form-row">
+          
+          <!-- Payment details section inside donation-form -->
+          <div id="card-element-container">
             <div class="form-group">
-              <label for="expiration">Date d'expiration</label>
-              <input
-                type="text"
-                id="expiration"
-                name="expiration"
-                placeholder="MM/AA"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="cvv">CVV</label>
-              <input
-                type="text"
-                id="cvv"
-                name="cvv"
-                placeholder="123"
-                required
-              />
+              <label for="card-element">Informations de paiement</label>
+              <div id="card-element" class="stripe-element">
+                <!-- Stripe Elements will be inserted here -->
+              </div>
+              <div id="card-errors" role="alert"></div>
             </div>
           </div>
-          <button type="submit" class="btn">Valider le don</button>
+          
+          <div class="donation-footer">
+            <p class="secure-payment">🔒 Paiement sécurisé</p>
+            <button type="submit" class="btn btn-primary">Valider le don</button>
+          </div>
         </form>
       </div>
     </div>
@@ -272,7 +265,7 @@
               required
             ></textarea>
           </div>
-          <button type="submit" class="btn">Organiser une collecte</button>
+          <button type="submit" class="btn btn-primary">Organiser une collecte</button>
         </form>
       </div>
     </div>
@@ -319,7 +312,7 @@
               required
             ></textarea>
           </div>
-          <button type="submit" class="btn">Envoyer</button>
+          <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>
       </div>
     </div>
@@ -358,8 +351,12 @@
         </div>
       </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="js/database.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="js/donation.js"></script>
   </body>
 </html>

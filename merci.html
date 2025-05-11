@@ -3,10 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Association - Boutique</title>
+    <title>Merci pour votre commande - Ligue Des Souvenirs</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
-    <link rel="stylesheet" href="css/boutique.css" />
+    <style>
+      .thank-you-container {
+        max-width: 800px;
+        margin: 100px auto;
+        text-align: center;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      
+      .check-icon {
+        color: #4CAF50;
+        font-size: 60px;
+        margin-bottom: 20px;
+      }
+      
+      .thank-you-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      
+      .thank-you-message {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #666;
+        margin-bottom: 30px;
+      }
+      
+      .order-reference {
+        font-weight: bold;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 30px;
+      }
+      
+      .links-container {
+        margin-top: 40px;
+      }
+      
+      .links-container a {
+        margin: 0 10px;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -24,7 +70,7 @@
         </div>
         <nav>
           <ul>
-            <li><a href="index.html" class="active">Accueil</a></li>
+            <li><a href="index.html">Accueil</a></li>
             <li><a href="evenements.html">Événements</a></li>
             <li><a href="boutique.html">Boutique</a></li>
             <li><a href="contact.html">Contact</a></li>
@@ -43,59 +89,25 @@
     </header>
 
     <main>
-      <section id="boutique">
-        <div class="container">
-          <h2>Notre boutique solidaire</h2>
-          <p class="subtitle">
-            Tous les bénéfices de nos ventes sont utilisés pour financer nos
-            actions solidaires.
-          </p>
-
-          <div class="product-filters">
-            <button class="filter-btn active" data-filter="all">
-              Tous les produits
-            </button>
-            <button class="filter-btn" data-filter="t-shirts">T-shirts</button>
-            <button class="filter-btn" data-filter="sweats">Sweats</button>
-            <button class="filter-btn" data-filter="accessoires">
-              Accessoires
-            </button>
-          </div>
-
-          <div class="products-grid">
-            <!-- Products will be loaded via JavaScript -->
-          </div>
+      <div class="thank-you-container">
+        <div class="check-icon">✓</div>
+        <h1 class="thank-you-title">Merci pour votre commande !</h1>
+        <p class="thank-you-message">
+          Votre paiement a été traité avec succès. Nous vous avons envoyé un email de confirmation.
+          Votre commande sera préparée et expédiée dans les plus brefs délais.
+        </p>
+        <div class="order-reference">
+          N° de commande: LDS-<script>document.write(Math.floor(Math.random() * 10000) + 10000)</script>
         </div>
-      </section>
-    </main>
-
-    <!-- Shopping Cart Modal -->
-    <div id="cart-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Votre panier</h2>
-        <div id="cart-items">
-          <!-- Cart items will be displayed here -->
-        </div>
-        <div id="cart-total">
-          <p>Total: <span>0.00 €</span></p>
-        </div>
-        <div class="cart-buttons">
-          <button id="empty-cart" class="btn btn-secondary">
-            Vider le panier
-          </button>
-          <button id="checkout" class="btn btn-primary" onclick="checkout()">Passer au paiement</button>
-        </div>
-        <div class="payment-methods">
-          <p>Paiement sécurisé par:</p>
-          <div class="payment-icons">
-            <img src="assets/payment/visa.png" alt="Visa" />
-            <img src="assets/payment/mastercard.png" alt="Mastercard" />
-            <img src="assets/payment/paypal.png" alt="PayPal" />
-          </div>
+        <p>
+          Si vous avez des questions concernant votre commande, n'hésitez pas à nous contacter via notre page Contact.
+        </p>
+        <div class="links-container">
+          <a href="boutique.html" class="btn">Retour à la boutique</a>
+          <a href="index.html" class="btn btn-primary">Retour à l'accueil</a>
         </div>
       </div>
-    </div>
+    </main>
 
     <footer>
       <div class="container">
@@ -117,12 +129,8 @@
           <div class="footer-column">
             <h3>Nous suivre</h3>
             <div class="social-links">
-              <a href="#"
-                ><img src="assets/Logo/Instagram.png" alt="Instagram"
-              /></a>
-              <a href="#"
-                ><img src="assets/Logo/Snap chat.png" alt="Snapchat"
-              /></a>
+              <a href="#"><img src="assets/Logo/Instagram.png" alt="Instagram" /></a>
+              <a href="#"><img src="assets/Logo/Snap chat.png" alt="Snapchat" /></a>
             </div>
           </div>
         </div>
@@ -131,11 +139,8 @@
         </div>
       </div>
     </footer>
-
     <script src="js/database.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="js/stripe-payment.js"></script>
   </body>
 </html>

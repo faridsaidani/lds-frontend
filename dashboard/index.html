@@ -403,7 +403,23 @@
         </div>
       </div>
     </div>
-
+    <div id="delete-confirmation-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Confirmation de suppression</h3>
+      <span class="close close-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p id="delete-confirmation-message">Êtes-vous sûr de vouloir supprimer cet élément?</p>
+      <input type="hidden" id="delete-item-id">
+      <input type="hidden" id="delete-item-type">
+    </div>
+    <div class="modal-footer">
+      <button id="confirm-delete-btn" class="btn btn-danger">Supprimer</button>
+      <button class="btn btn-cancel close-modal">Annuler</button>
+    </div>
+  </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/database.js"></script>
     <script src="js/dashboard.js"></script>

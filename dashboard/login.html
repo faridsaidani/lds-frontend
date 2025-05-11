@@ -42,6 +42,12 @@
         text-align: center;
         margin-top: 15px;
         font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .error-message.show {
+        opacity: 1;
       }
 
       .back-link {
@@ -73,62 +79,67 @@
 
     <script src="../js/database.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Check if already authenticated
-        // if (typeof checkAdminAuth === "function") {
-        //   checkAdminAuth()
-        //     .then(() => {
-        //       // Already authenticated, redirect to dashboard
-        //       window.location.href = "index.html";
-        //     })
-        //     .catch(() => {
-        //       // Not authenticated, show login form
-        //       console.log("Not authenticated, showing login form");
-        //     });
-        // }
+document.addEventListener("DOMContentLoaded", function () {
+  // Redirect if already logged in
+  if (typeof checkAdminAuth === "function") {
+    checkAdminAuth().then(() => {
+      // Already authenticated, redirect to dashboard
+      window.location.href = "index.html";
+    }).catch(() => {
+      // Not authenticated, stay on login page
+      console.log("Not authenticated, displaying login form");
+    });
+  }
+  
+  // Handle login form submission
+  const loginForm = document.getElementById("login-form");
+  const errorMessage = document.getElementById("error-message");
 
-        // Handle login form submission
-        const loginForm = document.getElementById("login-form");
-        const errorMessage = document.getElementById("error-message");
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    
+    // Clear any previous error
+    errorMessage.textContent = "";
+    errorMessage.classList.remove("show");
 
-        loginForm.addEventListener("submit", function (e) {
-          e.preventDefault();
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    
+    // Add loading indicator
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = "Connexion en cours...";
+    submitBtn.disabled = true;
 
-          const username = document.getElementById("username").value;
-          const password = document.getElementById("password").value;
-
-          // Call the login API function
-          if (typeof adminLogin === "function") {
-            adminLogin({ username, password })
-              .then((response) => {
-                console.log("Login successful:", response);
-                window.location.href = "index.html";
-              })
-              .catch((error) => {
-                console.error("Login failed:", error);
-                errorMessage.textContent =
-                  "Identifiants incorrects. Veuillez réessayer.";
-              });
-          } else {
-            // Demo mode - accept any login with "admin" username
-            if (username === "admin") {
-              // Store demo authentication in localStorage
-              localStorage.setItem(
-                "demoAdminAuth",
-                JSON.stringify({
-                  username: username,
-                  role: "admin",
-                  timestamp: new Date().toISOString(),
-                })
-              );
-              window.location.href = "index.html";
-            } else {
-              errorMessage.textContent =
-                'Identifiants incorrects. En mode démo, utilisez "admin" comme nom d\'utilisateur.';
-            }
-          }
+    // Call the login API function
+    if (typeof adminLogin === "function") {
+      adminLogin({ username, password })
+        .then((data) => {
+          console.log("Login successful, redirecting to dashboard...");
+          // Redirect to dashboard on success
+          // window.location.href = "index.html";
+        })
+        .catch((error) => {
+          // Reset button
+          submitBtn.textContent = originalBtnText;
+          submitBtn.disabled = false;
+          
+          // Show error message
+          errorMessage.textContent = error.message || "Nom d'utilisateur ou mot de passe invalide";
+          errorMessage.classList.add("show");
+          console.error("Login error:", error);
         });
-      });
+    } else {
+      // Reset button
+      submitBtn.textContent = originalBtnText;
+      submitBtn.disabled = false;
+      
+      // API function not available
+      errorMessage.textContent = "API non disponible. Veuillez réessayer plus tard.";
+      errorMessage.classList.add("show");
+    }
+  });
+});
     </script>
   </body>
 </html>

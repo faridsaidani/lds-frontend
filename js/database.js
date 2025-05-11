@@ -1,4 +1,4 @@
-// API Base URL - change this if your server runs on a different port or host
+// API Base URL - update to the PHP backend
 const API_BASE_URL = "http://localhost:3000/api";
 
 // Function to get all products
@@ -11,23 +11,21 @@ function getProducts() {
   });
 }
 
-// Function to get products by category
-function getProductsByCategory(category) {
-  return fetch(`${API_BASE_URL}/products/category/${category}`).then(
-    (response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
+// Function to get a specific product
+function getProduct(id) {
+  return fetch(`${API_BASE_URL}/products/${id}`).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
-  );
+    return response.json();
+  });
 }
 
-// Function to add a product
+// Function to add a product (Admin only)
 function addProduct(product) {
   // If product is a FormData object, send as is
   if (product instanceof FormData) {
-    return fetch(`${API_BASE_URL}/products`, {
+    return fetchWithAdminAuth(`${API_BASE_URL}/products`, {
       method: "POST",
       body: product,
     }).then((response) => {
@@ -39,7 +37,7 @@ function addProduct(product) {
   }
 
   // Otherwise convert to JSON
-  return fetch(`${API_BASE_URL}/products`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -53,9 +51,9 @@ function addProduct(product) {
   });
 }
 
-// Function to update a product
+// Function to update a product (Admin only)
 function updateProduct(id, product) {
-  return fetch(`${API_BASE_URL}/products/${id}`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/products/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -69,16 +67,14 @@ function updateProduct(id, product) {
   });
 }
 
-// Function to delete a product
-function deleteProduct(id) {
-  return fetch(`${API_BASE_URL}/products/${id}`, {
-    method: "DELETE",
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+// Function to delete a product (Admin only)
+function deleteProduct(productId) {
+  // First check if we have the delete function available from the API
+  if (typeof deleteProductApi !== 'function') {
+    return Promise.reject(new Error('API function deleteProductApi is not available'));
+  }
+  
+  return deleteProductApi(productId);
 }
 
 // Function to save an order
@@ -97,9 +93,9 @@ function saveOrder(order) {
   });
 }
 
-// Function to get all orders
+// Function to get all orders (Admin only)
 function getOrders() {
-  return fetch(`${API_BASE_URL}/orders`).then((response) => {
+  return fetchWithAdminAuth(`${API_BASE_URL}/orders`).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -108,8 +104,13 @@ function getOrders() {
 }
 
 // Function to get a specific order
-function getOrder(id) {
-  return fetch(`${API_BASE_URL}/orders/${id}`).then((response) => {
+function getOrder(id, email) {
+  // Check if we need to add email for customer access
+  const url = email 
+    ? `${API_BASE_URL}/orders/${id}?email=${encodeURIComponent(email)}` 
+    : `${API_BASE_URL}/orders/${id}`;
+    
+  return fetch(url).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -117,14 +118,14 @@ function getOrder(id) {
   });
 }
 
-// Function to update an order
+// Function to update order status (Admin only)
 function updateOrder(id, order) {
-  return fetch(`${API_BASE_URL}/orders/${id}`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/orders/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(order),
+    body: JSON.stringify({ status: order.status }),
   }).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -143,21 +144,11 @@ function getEvents() {
   });
 }
 
-// Function to get events by type (upcoming, solidarity, past)
-function getEventsByType(type) {
-  return fetch(`${API_BASE_URL}/events/type/${type}`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-}
-
-// Function to add an event
+// Function to add an event (Admin only)
 function addEvent(event) {
   // If event is a FormData object, send as is
   if (event instanceof FormData) {
-    return fetch(`${API_BASE_URL}/events`, {
+    return fetchWithAdminAuth(`${API_BASE_URL}/events`, {
       method: "POST",
       body: event,
     }).then((response) => {
@@ -169,7 +160,7 @@ function addEvent(event) {
   }
 
   // Otherwise convert to JSON
-  return fetch(`${API_BASE_URL}/events`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/events`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -193,9 +184,9 @@ function getEvent(id) {
   });
 }
 
-// Function to update an event
+// Function to update an event (Admin only)
 function updateEvent(id, event) {
-  return fetch(`${API_BASE_URL}/events/${id}`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/events/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -209,9 +200,10 @@ function updateEvent(id, event) {
   });
 }
 
-// Function to delete an event
+// Function to delete an event (Admin only)
 function deleteEvent(id) {
-  return fetch(`${API_BASE_URL}/events/${id}`, {
+  console.log("Deleting event with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/events/${id}`, {
     method: "DELETE",
   }).then((response) => {
     if (!response.ok) {
@@ -237,33 +229,9 @@ function saveRegistration(registration) {
   });
 }
 
-// Function to get all registrations
+// Function to get all registrations (Admin only)
 function getRegistrations() {
-  return fetch(`${API_BASE_URL}/registrations`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-}
-
-// Function to get registrations by event
-function getRegistrationsByEvent(eventId) {
-  return fetch(`${API_BASE_URL}/registrations/event/${eventId}`).then(
-    (response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    }
-  );
-}
-
-// Function to delete a registration
-function deleteRegistration(id) {
-  return fetch(`${API_BASE_URL}/registrations/${id}`, {
-    method: "DELETE",
-  }).then((response) => {
+  return fetchWithAdminAuth(`${API_BASE_URL}/registrations`).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -287,31 +255,9 @@ function saveDonation(donation) {
   });
 }
 
-// Function to get all donations
+// Function to get all donations (Admin only)
 function getDonations() {
-  return fetch(`${API_BASE_URL}/donations`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-}
-
-// Function to get donations by type
-function getDonationsByType(type) {
-  return fetch(`${API_BASE_URL}/donations/type/${type}`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-}
-
-// Function to delete a donation
-function deleteDonation(id) {
-  return fetch(`${API_BASE_URL}/donations/${id}`, {
-    method: "DELETE",
-  }).then((response) => {
+  return fetchWithAdminAuth(`${API_BASE_URL}/donations`).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -335,9 +281,9 @@ function saveMessage(message) {
   });
 }
 
-// Function to get all messages
+// Function to get all messages (Admin only)
 function getMessages() {
-  return fetch(`${API_BASE_URL}/messages`).then((response) => {
+  return fetchWithAdminAuth(`${API_BASE_URL}/messages`).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -345,9 +291,9 @@ function getMessages() {
   });
 }
 
-// Function to get unread messages
+// Function to get unread messages (Admin only)
 function getUnreadMessages() {
-  return fetch(`${API_BASE_URL}/messages/unread`).then((response) => {
+  return fetchWithAdminAuth(`${API_BASE_URL}/messages/unread`).then((response) => {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -355,19 +301,9 @@ function getUnreadMessages() {
   });
 }
 
-// Function to get a specific message
-function getMessage(id) {
-  return fetch(`${API_BASE_URL}/messages/${id}`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
-}
-
-// Function to update a message
+// Function to update a message (Admin only)
 function updateMessage(id, updates) {
-  return fetch(`${API_BASE_URL}/messages/${id}`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/messages/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -381,94 +317,247 @@ function updateMessage(id, updates) {
   });
 }
 
-// Function to delete a message
-function deleteMessage(id) {
-  return fetch(`${API_BASE_URL}/messages/${id}`, {
-    method: "DELETE",
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+// Cookie management functions
+function setCookie(name, value, days, path = '/') {
+  let expires = '';
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = '; expires=' + date.toUTCString();
+  }
+  
+  // Set secure flag in production
+  const secure = window.location.protocol === 'https:' ? '; secure' : '';
+  
+  document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=${path}${secure}; samesite=strict`;
 }
 
-// Function to get recent activities
-function getRecentActivities() {
-  return fetch(`${API_BASE_URL}/activities`).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+function getCookie(name) {
+  const nameEQ = name + '=';
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i].trim();
+    if (c.indexOf(nameEQ) === 0) {
+      return decodeURIComponent(c.substring(nameEQ.length, c.length));
     }
-    return response.json();
-  });
+  }
+  return null;
 }
 
-// Function to log into the admin dashboard - UPDATE THIS FUNCTION
+function deleteCookie(name, path = '/') {
+  setCookie(name, '', -1, path);
+}
+
+// Function to log into the admin dashboard
 // Function to log into the admin dashboard
 function adminLogin(credentials) {
+  console.log("🔐 Attempting login for user:", credentials.username);
+  console.log("🌐 Login URL:", `${API_BASE_URL}/admin/login`);
+  
   return fetch(`${API_BASE_URL}/admin/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify(credentials),
-  }).then((response) => {
+  }).then(async (response) => {
+    console.log("📊 Login response status:", response.status);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Login failed:", errorText);
+      try {
+        // Try to parse as JSON if possible
+        const errorJson = JSON.parse(errorText);
+        console.error("❌ Login error details:", errorJson);
+      } catch (e) {
+        // If not JSON, show as text
+        console.error("❌ Login error response (text):", errorText);
+      }
       throw new Error("Invalid credentials");
     }
-
-    // Store in localStorage as a fallback
-    localStorage.setItem(
-      "demoAdminAuth",
-      JSON.stringify({
-        username: credentials.username,
-        role: "admin",
-        timestamp: new Date().toISOString(),
-      })
-    );
-
-    return response.json();
+    
+    try {
+      const data = await response.json();
+      console.log("✅ Login successful, response data:", JSON.stringify(data, null, 2));
+      
+      if (!data.token) {
+        console.error("❌ No token in response:", data);
+        throw new Error("Authentication failed: No token received");
+      }
+      
+      // Store token in cookie - expires based on server response or default to 1 day
+      const expiresDate = data.expires_at ? new Date(data.expires_at) : null;
+      const now = new Date();
+      const expiryDays = expiresDate ? 
+        Math.max(1, Math.ceil((expiresDate - now) / (1000 * 60 * 60 * 24))) : 1;
+      
+      console.log(`🍪 Setting auth cookie, expires in ${expiryDays} days`);
+      setCookie('authToken', data.token, expiryDays);
+      
+      // Store user info
+      const userInfo = {
+        userId: data.user_id,
+        username: data.username,
+        role: data.role,
+        expiresAt: data.expires_at
+      };
+      setCookie('userInfo', JSON.stringify(userInfo), expiryDays);
+      
+      console.log("💾 Auth data stored in cookies");
+      return data;
+    } catch (e) {
+      console.error("❌ Error parsing login response:", e);
+      throw new Error("Invalid response format");
+    }
   });
 }
 
 // Function to check admin authentication status
 function checkAdminAuth() {
+  const token = getCookie('authToken');
+  
+  console.log("🔍 Checking admin authentication status");
+  console.log(`🔑 Auth token exists: ${!!token}`);
+  
+  if (!token) {
+    console.error("❌ No auth token found in cookies");
+    return Promise.reject(new Error("Not authenticated"));
+  }
+  
+  console.log("🌐 Sending auth check request");
   return fetch(`${API_BASE_URL}/admin/check-auth`, {
     method: "GET",
-    credentials: "include", // This is already correct
-  }).then((response) => {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    },
+  }).then(async (response) => {
+    console.log(`📊 Auth check response status: ${response.status}`);
+    
     if (!response.ok) {
+      console.error("❌ Auth check failed:", response.statusText);
+      // If server says token is invalid, clear cookies
+      if (response.status === 401) {
+        console.log("🗑️ Clearing invalid auth token from cookies");
+        deleteCookie('authToken');
+        deleteCookie('userInfo');
+      }
       throw new Error("Not authenticated");
     }
-    return response.json();
+    
+    const data = await response.json();
+    console.log("✅ Authentication valid, user data:", data);
+    return data;
   });
 }
 
 // Function to log out from the admin dashboard
 function adminLogout() {
+  const token = getCookie('authToken');
+  
+  if (!token) {
+    console.log("🔍 No auth token found, nothing to logout");
+    deleteCookie('authToken');
+    deleteCookie('userInfo');
+    return Promise.resolve({ success: true });
+  }
+  
+  console.log("🌐 Sending logout request");
   return fetch(`${API_BASE_URL}/admin/logout`, {
     method: "POST",
-    credentials: "include", // This is already correct
+    headers: {
+      "Authorization": `Bearer ${token}`
+    },
   }).then((response) => {
+    // Always clear cookies regardless of server response
+    console.log("🗑️ Clearing auth cookies");
+    deleteCookie('authToken');
+    deleteCookie('userInfo');
+    
     if (!response.ok) {
+      console.warn("⚠️ Logout request failed:", response.statusText);
       throw new Error("Logout failed");
     }
     return response.json();
+  }).catch(error => {
+    console.error("❌ Logout error:", error);
+    // Still clear cookies even if the request fails
+    deleteCookie('authToken');
+    deleteCookie('userInfo');
+    throw error;
   });
+}
+
+// Helper function for making authenticated admin requests
+function fetchWithAdminAuth(url, options = {}) {
+  const token = getCookie('authToken');
+  console.log("🔍 Fetching with admin auth");
+  
+  console.log(`🔍 Authenticated request to: ${url}`);
+  console.log(`🔑 Auth token exists: ${!!token}`);
+  
+  if (!token) {
+    console.error("❌ Auth token missing - not authenticated");
+    return Promise.reject(new Error("Not authenticated"));
+  }
+  
+  const authOptions = {
+    ...options,
+    headers: {
+      ...options.headers,
+      "Authorization": `Bearer ${token}`
+    }
+  };
+  
+  console.log("📤 Request headers include Authorization");
+  
+  return fetch(url, authOptions).then(async response => {
+    console.log(`📊 Response from ${url}:`, response.status);
+    
+    // If we get an authentication error, clear cookies and redirect to login
+    if (response.status === 401) {
+      console.error("❌ Authentication failed (401) - clearing token");
+      deleteCookie('authToken');
+      deleteCookie('userInfo');
+      
+      // Redirect to login page if we're in the dashboard
+      if (window.location.pathname.includes('dashboard') || 
+          window.location.pathname.includes('admin')) {
+        console.log("🔄 Redirecting to login page");
+        window.location.href = '/dashboard/login.html';
+        return new Promise(() => {}); // Never resolves, since we're redirecting
+      }
+      throw new Error("Authentication expired. Please log in again.");
+    }
+    
+    return response;
+  });
+}
+
+// Function to get current user info
+function getCurrentUser() {
+  const userInfoStr = getCookie('userInfo');
+  if (!userInfoStr) return null;
+  
+  try {
+    return JSON.parse(userInfoStr);
+  } catch (e) {
+    console.error("Error parsing user info:", e);
+    return null;
+  }
 }
 
 // Use localStorage as a fallback when API is not available
 // These functions are called from main.js when API calls fail
 
 // Function to save event registration to localStorage
-function saveEventRegistration(data) {
-  console.log("Saving event registration to localStorage:", data);
+function processEventRegistration(registration) {
+  console.log("Saving event registration to localStorage:", registration);
   const registrations = JSON.parse(
     localStorage.getItem("eventRegistrations") || "[]"
   );
   registrations.push({
-    ...data,
+    ...registration,
     timestamp: new Date().toISOString(),
   });
   localStorage.setItem("eventRegistrations", JSON.stringify(registrations));
@@ -520,4 +609,98 @@ function processContactForm(data) {
     timestamp: new Date().toISOString(),
   });
   localStorage.setItem("contactRequests", JSON.stringify(contacts));
+}
+
+// Function to upload a product image (Admin only)
+function uploadProductImage(imageFile) {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+  
+  return fetchWithAdminAuth(`${API_BASE_URL}/products/upload-image`, {
+    method: "POST",
+    body: formData
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+}
+
+// Function to upload an event image (Admin only)
+function uploadEventImage(imageFile) {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+  
+  return fetchWithAdminAuth(`${API_BASE_URL}/events/upload-image`, {
+    method: "POST",
+    body: formData
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  });
+}
+// Add these functions if they don't exist
+
+function deleteEventApi(id) {
+  console.log("Deleting event with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/events/${id}`, {
+    method: "DELETE",
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete event");
+    }
+    return response.json().catch(() => ({ success: true }));
+  });
+}
+
+function deleteDonationApi(id) {
+  console.log("Deleting donation with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/donations/${id}`, {
+    method: "DELETE",
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete donation");
+    }
+    return response.json().catch(() => ({ success: true }));
+  });
+}
+
+function deleteMessageApi(id) {
+  console.log("Deleting message with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/messages/${id}`, {
+    method: "DELETE",
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete message");
+    }
+    return response.json().catch(() => ({ success: true }));
+  });
+}
+
+function deleteRegistrationApi(id) {
+  console.log("Deleting registration with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/registrations/${id}`, {
+    method: "DELETE",
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete registration");
+    }
+    return response.json().catch(() => ({ success: true }));
+  });
+}
+
+// Delete product API function (note: This fixes the name conflict with the existing deleteProduct)
+function deleteProductApi(id) {
+  console.log("Deleting product with ID:", id);
+  return fetchWithAdminAuth(`${API_BASE_URL}/products/${id}`, {
+    method: "DELETE",
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to delete product");
+    }
+    return response.json().catch(() => ({ success: true }));
+  });
 }

@@ -413,3 +413,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+#delete-confirmation-modal .modal-content {
+  max-width: 500px;
+}
+
+#delete-confirmation-message {
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: center;
+}
