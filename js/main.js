@@ -139,6 +139,98 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function initializeRegistrationForm() {
+  const inscriptionForm = document.getElementById('inscription-form');
+  const inscriptionModal = document.getElementById('inscription-modal');
+  
+  if (inscriptionForm) {
+    inscriptionForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form data
+      const eventId = this.getAttribute('data-event-id');
+      const eventName = document.getElementById('event-name').value;
+      const nom = document.getElementById('inscription-nom').value;
+      const email = document.getElementById('inscription-email').value;
+      const telephone = document.getElementById('inscription-telephone').value;
+      
+      // Create registration object with the EXACT format expected by API
+      const registration = {
+        event_id: parseInt(eventId), // Make sure this is a number
+        name: nom,
+        email: email,
+        phone: telephone
+      };
+      
+      console.log("Submitting registration:", registration);
+      
+      // Show loading state
+      const submitButton = inscriptionForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Inscription en cours...';
+      
+      // Save to database
+      saveRegistration(registration)
+        .then(response => {
+          console.log('Registration saved successfully:', response);
+          
+          // Show success message
+          alert(`Merci ${nom} ! Votre inscription à l'événement "${eventName}" a été confirmée.`);
+          
+          // Reset form
+          inscriptionForm.reset();
+          
+          // Close modal
+          if (inscriptionModal) {
+            inscriptionModal.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error saving registration:', error);
+          alert(`Une erreur est survenue lors de l'inscription. Veuillez réessayer. (${error.message})`);
+          
+          // Fallback to localStorage if API fails
+          saveEventRegistration({
+            event_id: eventId,
+            name: nom,
+            email: email,
+            phone: telephone
+          });
+        })
+        .finally(() => {
+          // Reset button state
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+        });
+    });
+  }
+}
+
+// Update the function that shows the registration modal
+function showRegistrationModal(event) {
+  const modal = document.getElementById('inscription-modal');
+  const form = document.getElementById('inscription-form');
+  const eventNameInput = document.getElementById('event-name');
+  
+  if (modal && form && eventNameInput) {
+    console.log("Opening registration modal for event:", event);
+    
+    // Set the event name in the hidden field
+    eventNameInput.value = event.name || event.title;
+    
+    // Add event ID to the form - important for database storage
+    // Make sure we're using the correct property from the event object
+    const eventId = event.id || event.event_id;
+    form.setAttribute('data-event-id', eventId);
+    
+    console.log(`Set event ID to ${eventId} for registration`);
+    
+    // Show the modal
+    modal.style.display = 'block';
+  }
+}
+
   // Helper function to create event cards
   function createEventCard(event, type) {
     const dateObj = new Date(event.date);
@@ -153,40 +245,46 @@ document.addEventListener("DOMContentLoaded", function () {
     div.setAttribute("data-event-type", type);
     div.setAttribute("data-event-id", event.id);
 
-    div.innerHTML = `
-      <div class="event-image">
-        <img src="${event.image}" alt="${event.name}">
-      </div>
-      <div class="event-details">
-        <h3>${event.name}</h3>
-        <div class="event-date">${formattedDate}</div>
-        <p>${event.description}</p>
-        ${
-          type === "upcoming"
-            ? `<button class="btn inscription-btn" data-event="${event.name}" data-event-id="${event.id}">S'inscrire</button>`
-            : "<p><b>Clickez pour voir les photos</b></p>"
-        }
-      </div>
-    `;
-
-    return div;
+const inscriptionButton = type === "upcoming"
+    ? `<button class="btn inscription-btn" data-event="${event.name}" data-event-id="${event.id}">S'inscrire</button>`
+    : "<p><b>Clickez pour voir les photos</b></p>";
+  
+  div.innerHTML = `
+    <div class="event-image">
+      <img src="${event.image}" alt="${event.name}">
+    </div>
+    <div class="event-details">
+      <h3>${event.name}</h3>
+      <div class="event-date">${formattedDate}</div>
+      <p>${event.description}</p>
+      ${inscriptionButton}
+    </div>
+  `;
+  
+  return div;
   }
 
   // Setup event listeners for dynamically created events
   function setupEventListeners() {
     // Event buttons (for registration)
-    const inscriptionBtns = document.querySelectorAll(".inscription-btn");
-    inscriptionBtns.forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const eventName = this.getAttribute("data-event");
-        const eventId = this.getAttribute("data-event-id") || "1";
-        document.getElementById("event-name").value = eventName;
-        if (document.getElementById("event-id")) {
-          document.getElementById("event-id").value = eventId;
-        }
-        openModal("inscription-modal");
-      });
-    });
+const inscriptionBtns = document.querySelectorAll(".inscription-btn");
+inscriptionBtns.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    const eventName = this.getAttribute("data-event");
+    const eventId = this.getAttribute("data-event-id");
+    
+    console.log(`Clicked inscription button for event: ${eventName}, ID: ${eventId}`);
+    
+    // Create an event object to pass to showRegistrationModal
+    const event = {
+      id: eventId,
+      name: eventName
+    };
+    
+    // Show the modal with this event
+    showRegistrationModal(event);
+  });
+});
 
     // Event item click for photo albums
     const eventItems = document.querySelectorAll(".event-item");
@@ -370,54 +468,54 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Event Registration Form
-  const inscriptionForm = document.getElementById("inscription-form");
-  if (inscriptionForm) {
-    inscriptionForm.addEventListener("submit", function (event) {
-      event.preventDefault();
+  // const inscriptionForm = document.getElementById("inscription-form");
+  // if (inscriptionForm) {
+  //   inscriptionForm.addEventListener("submit", function (event) {
+  //     event.preventDefault();
 
-      // Get event data
-      const eventName = document.getElementById("event-name").value;
-      const eventId = document.getElementById("event-id")?.value || "1";
+  //     // Get event data
+  //     const eventName = document.getElementById("event-name").value;
+  //     const eventId = document.getElementById("event-id")?.value || "1";
 
-      // Create registration object
-      const registration = {
-        event_id: parseInt(eventId),
-        name: document.getElementById("inscription-nom").value,
-        email: document.getElementById("inscription-email").value,
-        phone: document.getElementById("inscription-telephone").value,
-      };
+  //     // Create registration object
+  //     const registration = {
+  //       event_id: parseInt(eventId),
+  //       name: document.getElementById("inscription-nom").value,
+  //       email: document.getElementById("inscription-email").value,
+  //       phone: document.getElementById("inscription-telephone").value,
+  //     };
 
-      // First try to save to the database through API
-      if (typeof saveRegistration === "function") {
-        console.log("Saving registration to database:", registration);
-        saveRegistration(registration)
-          .then((response) => {
-            console.log("Registration saved to database:", response);
-            alert(`Merci pour votre inscription à l'événement "${eventName}"!`);
-            inscriptionForm.reset();
-            closeModal(document.getElementById("inscription-modal"));
-          })
-          .catch((error) => {
-            console.error("Error saving registration to database:", error);
-            // Fallback to localStorage if API fails
-            saveEventRegistration(registration);
-            alert(
-              `Merci pour votre inscription à l'événement "${eventName}"! (Mode hors ligne)`
-            );
-            inscriptionForm.reset();
-            closeModal(document.getElementById("inscription-modal"));
-          });
-      } else {
-        // If API function not available, use localStorage fallback
-        saveEventRegistration(registration);
-        alert(
-          `Merci pour votre inscription à l'événement "${eventName}"! (Mode hors ligne)`
-        );
-        inscriptionForm.reset();
-        closeModal(document.getElementById("inscription-modal"));
-      }
-    });
-  }
+  //     // First try to save to the database through API
+  //     if (typeof saveRegistration === "function") {
+  //       console.log("Saving registration to database:", registration);
+  //       saveRegistration(registration)
+  //         .then((response) => {
+  //           console.log("Registration saved to database:", response);
+  //           alert(`Merci pour votre inscription à l'événement "${eventName}"!`);
+  //           inscriptionForm.reset();
+  //           closeModal(document.getElementById("inscription-modal"));
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error saving registration to database:", error);
+  //           // Fallback to localStorage if API fails
+  //           saveEventRegistration(registration);
+  //           alert(
+  //             `Merci pour votre inscription à l'événement "${eventName}"! (Mode hors ligne)`
+  //           );
+  //           inscriptionForm.reset();
+  //           closeModal(document.getElementById("inscription-modal"));
+  //         });
+  //     } else {
+  //       // If API function not available, use localStorage fallback
+  //       saveEventRegistration(registration);
+  //       alert(
+  //         `Merci pour votre inscription à l'événement "${eventName}"! (Mode hors ligne)`
+  //       );
+  //       inscriptionForm.reset();
+  //       closeModal(document.getElementById("inscription-modal"));
+  //     }
+  //   });
+  // }
 
   // Financial Donation Form
   const donationForm = document.getElementById("donation-form");
@@ -745,4 +843,5 @@ document.addEventListener("DOMContentLoaded", function () {
       navMenu.classList.toggle("active");
     });
   }
+  initializeRegistrationForm();
 });

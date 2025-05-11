@@ -213,17 +213,37 @@ function deleteEvent(id) {
   });
 }
 
-// Function to save event registration
-function saveRegistration(registration) {
+// Update or add this function to database.js
+function saveRegistration(registrationData) {
+  console.log("Saving registration:", registrationData);
+  
+  // Ensure data is in the correct format expected by API
+  const formattedData = {
+    event_id: parseInt(registrationData.event_id),
+    name: registrationData.name,
+    email: registrationData.email,
+    phone: registrationData.phone
+  };
+  
+  console.log("Formatted registration data:", formattedData);
+  
   return fetch(`${API_BASE_URL}/registrations`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(registration),
-  }).then((response) => {
+    body: JSON.stringify(formattedData)
+  }).then(response => {
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      return response.text().then(text => {
+        // Try to parse as JSON, but if it's not JSON, use the raw text
+        try {
+          const errorData = JSON.parse(text);
+          throw new Error(errorData.message || "Failed to save registration");
+        } catch (e) {
+          throw new Error(`Server error: ${text || response.status}`);
+        }
+      });
     }
     return response.json();
   });
