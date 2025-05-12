@@ -794,9 +794,11 @@ function loadMessages() {
 }
 
 function viewMessage(messageId) {
+  console.log(`Attempting to view message with ID: ${messageId}`); // For debugging
   if (typeof getMessage === "function") {
     getMessage(messageId)
       .then((message) => {
+        console.log("Message data received:", message); // For debugging
         document.getElementById("message-sender").textContent = message.name;
         document.getElementById("message-email").textContent = message.email;
 
@@ -813,8 +815,8 @@ function viewMessage(messageId) {
           .getElementById("mark-read-btn")
           .setAttribute("data-message-id", message.id);
 
-        // Open modal
-        document.getElementById("view-message-modal").style.display = "block";
+        // Use the openModal helper function
+        openModal("view-message-modal");
 
         // Mark as read if not read already
         if (!message.read) {
@@ -825,6 +827,9 @@ function viewMessage(messageId) {
         console.error("Error loading message:", error);
         alert("Erreur lors du chargement du message.");
       });
+  } else {
+    console.error("getMessage function is not defined. Cannot view message.");
+    alert("La fonction pour récupérer les détails du message n'est pas disponible.");
   }
 }
 

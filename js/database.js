@@ -311,6 +311,33 @@ function getMessages() {
   });
 }
 
+function getMessage(messageId) {
+  const token = getCookie("authToken"); // Or localStorage.getItem("authToken")
+  if (!token) {
+    return Promise.reject(new Error("Authentication token not found."));
+  }
+
+  return fetch(`${API_BASE_URL}/messages/${messageId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      // Try to parse error message from API if available
+      return response.json().then(err => { 
+        throw new Error(err.message || `API Error: ${response.status}`); 
+      }).catch(() => {
+        // Fallback if error response is not JSON
+        throw new Error(`API Error: ${response.status}`);
+      });
+    }
+    return response.json();
+  });
+}
+
 // Function to get unread messages (Admin only)
 function getUnreadMessages() {
   return fetchWithAdminAuth(`${API_BASE_URL}/messages/unread`).then((response) => {
@@ -323,7 +350,7 @@ function getUnreadMessages() {
 
 // Function to update a message (Admin only)
 function updateMessage(id, updates) {
-  return fetchWithAdminAuth(`${API_BASE_URL}/messages/${id}`, {
+  return fetchWithAdminAuth(`${API_BASE_URL}/messages/${id}/read`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
