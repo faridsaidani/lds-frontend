@@ -2,18 +2,23 @@
 document.addEventListener("DOMContentLoaded", function () {
   // First check if API authentication function is available
 
-  // Check demo authentication from localStorage
-  // const demoAuth = JSON.parse(localStorage.getItem("demoAdminAuth") || "null");
-  // if (demoAuth) {
-    // Set admin name
-    document.getElementById("admin-name").textContent = "admin";
-    // Continue loading dashboard
+  // Check demo authentication from cookie
+  const authToken = getCookie("authToken"); // Reads from cookie
+
+  if (authToken) {
+    // Token exists, proceed with dashboard initialization
+    // You might want to set the admin name dynamically if possible
+    const adminNameElement = document.getElementById("admin-name");
+    if (adminNameElement) {
+        // Example: Retrieve admin name from another cookie or a placeholder
+        adminNameElement.textContent = getCookie("adminName") || "Admin";
+    }
     initializeDashboard();
-  // } else {
-  //   // No authentication, redirect to login
-  //   console.log("No authentication found. Redirecting to login.");
-  //   window.location.href = "login.html";
-  // }
+  } else {
+    // No authentication token found in cookies, redirect to index.html
+    console.log("No authentication token found in cookies. Redirecting to index.html.");
+    window.location.href = "login.html"; // Redirect to parent folder's index.html
+  }
 
   // Handle logout button
   document.getElementById("logout-btn").addEventListener("click", function () {

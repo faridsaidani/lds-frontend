@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const nom = document.getElementById('inscription-nom').value;
       const email = document.getElementById('inscription-email').value;
       const telephone = document.getElementById('inscription-telephone').value;
-      
+      console.log(eventId, eventName, nom, email, telephone);
       // Create registration object with the EXACT format expected by API
       const registration = {
         event_id: parseInt(eventId), // Make sure this is a number
@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         email: email,
         phone: telephone
       };
+
       
       console.log("Submitting registration:", registration);
       
@@ -190,13 +191,13 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error('Error saving registration:', error);
           alert(`Une erreur est survenue lors de l'inscription. Veuillez réessayer. (${error.message})`);
           
-          // Fallback to localStorage if API fails
-          saveEventRegistration({
-            event_id: eventId,
-            name: nom,
-            email: email,
-            phone: telephone
-          });
+          // // Fallback to localStorage if API fails
+          // saveEventRegistration({
+          //   event_id: eventId,
+          //   name: nom,
+          //   email: email,
+          //   phone: telephone
+          // });
         })
         .finally(() => {
           // Reset button state
@@ -831,10 +832,6 @@ inscriptionBtns.forEach((btn) => {
     });
     localStorage.setItem("contactRequests", JSON.stringify(contacts));
   }
-});
-
-// Mobile menu toggle
-document.addEventListener("DOMContentLoaded", function () {
   const menuIcon = document.querySelector(".menu-icon");
   const navMenu = document.querySelector("nav ul");
 
