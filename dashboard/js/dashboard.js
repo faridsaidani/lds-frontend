@@ -3,18 +3,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // First check if API authentication function is available
 
   // Check demo authentication from localStorage
-  const demoAuth = JSON.parse(localStorage.getItem("demoAdminAuth") || "null");
-  if (demoAuth) {
+  // const demoAuth = JSON.parse(localStorage.getItem("demoAdminAuth") || "null");
+  // if (demoAuth) {
     // Set admin name
-    document.getElementById("admin-name").textContent =
-      demoAuth.username || "Admin";
+    document.getElementById("admin-name").textContent = "admin";
     // Continue loading dashboard
     initializeDashboard();
-  } else {
-    // No authentication, redirect to login
-    console.log("No authentication found. Redirecting to login.");
-    window.location.href = "login.html";
-  }
+  // } else {
+  //   // No authentication, redirect to login
+  //   console.log("No authentication found. Redirecting to login.");
+  //   window.location.href = "login.html";
+  // }
 
   // Handle logout button
   document.getElementById("logout-btn").addEventListener("click", function () {
