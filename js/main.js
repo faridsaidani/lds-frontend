@@ -416,6 +416,17 @@ inscriptionBtns.forEach((btn) => {
   // Call loadEvents and loadHomeEvents functions
   loadEvents();
   loadHomeEvents();
+  initializeRegistrationForm(); // Ensure this is called after the DOM is ready
+
+  // Mobile menu toggle
+  const menuIcon = document.querySelector('.menu-icon');
+  const navUl = document.querySelector('nav ul');
+
+  if (menuIcon && navUl) {
+    menuIcon.addEventListener('click', () => {
+      navUl.classList.toggle('active');
+    });
+  }
 
   // Handle modals
   const modals = {
@@ -908,14 +919,6 @@ inscriptionBtns.forEach((btn) => {
       timestamp: new Date().toISOString(),
     });
     localStorage.setItem("contactRequests", JSON.stringify(contacts));
-  }
-  const menuIcon = document.querySelector(".menu-icon");
-  const navMenu = document.querySelector("nav ul");
-
-  if (menuIcon) {
-    menuIcon.addEventListener("click", function () {
-      navMenu.classList.toggle("active");
-    });
   }
   initializeRegistrationForm();
 });

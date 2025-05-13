@@ -2,7 +2,7 @@
 :root {
   --primary-color: #e7114c;
   --secondary-color: #000;
-  --text-color: #000;
+  --text-color: #000; 
   --light-color: #f4f4f4;
   --dark-color: #222;
   --border-radius: 5px;
@@ -79,6 +79,20 @@ header {
   font-size: 1.8rem;
   color: var(--primary-color);
   margin: 0;
+}
+
+/* Menu Icon (Hidden by default on larger screens) */
+.menu-icon {
+  display: none; /* Hidden on desktop */
+  cursor: pointer;
+}
+
+.menu-icon div {
+  width: 25px;
+  height: 3px;
+  background-color: var(--light-color); /* Color of the hamburger bars */
+  margin: 5px 0;
+  transition: 0.4s;
 }
 
 nav ul {
