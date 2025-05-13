@@ -208,6 +208,83 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 }
 
+// Accessibility: Zoom functionality
+  const zoomInButton = document.getElementById("zoom-in-button");
+  const zoomOutButton = document.getElementById("zoom-out-button");
+  let currentZoomLevel = 100; // Represents percentage
+
+  if (zoomInButton && zoomOutButton) {
+    // Load saved zoom level
+    const savedZoom = localStorage.getItem('pageZoomLevel');
+    if (savedZoom) {
+      currentZoomLevel = parseInt(savedZoom, 10);
+      document.body.style.fontSize = currentZoomLevel + "%";
+    }
+
+    zoomInButton.addEventListener("click", function () {
+      if (currentZoomLevel < 150) { // Max zoom 150%
+        currentZoomLevel += 10;
+        document.body.style.fontSize = currentZoomLevel + "%";
+        localStorage.setItem('pageZoomLevel', currentZoomLevel);
+      }
+    });
+
+    zoomOutButton.addEventListener("click", function () {
+      if (currentZoomLevel > 70) { // Min zoom 70%
+        currentZoomLevel -= 10;
+        document.body.style.fontSize = currentZoomLevel + "%";
+        localStorage.setItem('pageZoomLevel', currentZoomLevel);
+      }
+    });
+  }
+
+  // Navbar Search Functionality
+  const navSearchInput = document.getElementById("nav-search-input");
+  const navSearchButton = document.getElementById("nav-search-button");
+
+  function performSearch() {
+    const searchTerm = navSearchInput.value.trim().toLowerCase();
+    if (searchTerm) {
+      console.log("Search term:", searchTerm);
+      // Basic idea: Redirect to a search results page or filter content on the current page.
+      // For a simple redirect (you'd need to create search.html):
+      // window.location.href = `search.html?q=${encodeURIComponent(searchTerm)}`;
+
+      // Example: If you want to search within specific elements on the current page
+      // This is a very basic example and would need to be much more robust for a real site.
+      
+      const contentToSearch = document.querySelectorAll('main p, main h2, main h3'); // Adjust selectors
+      let found = false;
+      contentToSearch.forEach(element => {
+        if (element.textContent.toLowerCase().includes(searchTerm)) {
+          // You could highlight the element or scroll to it
+          element.style.backgroundColor = 'yellow'; // Example highlight
+          if (!found) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            found = true;
+          }
+        } else {
+          element.style.backgroundColor = ''; // Remove previous highlight
+        }
+      });
+      if (!found) {
+        alert("Aucun résultat trouvé sur cette page pour : " + searchTerm);
+      }
+      
+    } else {
+      alert("Veuillez entrer un terme à rechercher.");
+    }
+  }
+
+  if (navSearchButton && navSearchInput) {
+    navSearchButton.addEventListener("click", performSearch);
+    navSearchInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        performSearch();
+      }
+    });
+  }
+
 // Update the function that shows the registration modal
 function showRegistrationModal(event) {
   const modal = document.getElementById('inscription-modal');

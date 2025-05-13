@@ -62,6 +62,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 15px 0;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens if needed */
 }
 
 .logo-container {
@@ -119,6 +120,91 @@ nav a.active {
 
 .donate-btn:hover {
   background-color: #c50e3f;
+}
+
+/* Nav Controls Styling */
+.nav-controls {
+  display: flex; /* Aligns search and accessibility controls horizontally */
+  align-items: center; /* Vertically aligns items in the middle */
+  gap: 15px; /* Adds space between the search group and accessibility group */
+  margin-left: auto; /* Pushes the controls to the right, if nav ul is not taking all space */
+  /* Or use margin-left: 20px; if you want a fixed space from the nav links */
+}
+
+.search-container {
+  display: flex; /* Aligns input and button horizontally */
+  align-items: center;
+  border: 1px solid #ccc; /* Example border, adjust color as needed */
+  border-radius: 20px; /* Rounded corners for the search container */
+  overflow: hidden; /* Ensures button stays within rounded corners */
+  background-color: #f8f9fa; /* Light background for the search bar */
+}
+
+#nav-search-input {
+  padding: 8px 12px;
+  border: none; /* Remove default input border */
+  outline: none; /* Remove focus outline */
+  font-size: 0.9rem;
+  background-color: transparent; /* Make input background transparent */
+  color: #333; /* Text color for input */
+  min-width: 150px; /* Adjust as needed */
+}
+
+#nav-search-input::placeholder {
+  color: #6c757d; /* Placeholder text color */
+}
+
+.btn-search {
+  background-color: var(--primary-color); /* Use your primary color variable */
+  color: white;
+  border: none;
+  padding: 8px 12px; /* Adjust padding to match input height */
+  cursor: pointer;
+  font-size: 1rem; /* Adjust icon size if needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.btn-search:hover {
+  background-color: #c50e3f; /* Darker shade of primary for hover, adjust as needed */
+}
+
+.accessibility-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between the zoom buttons */
+}
+
+.accessibility-controls button {
+  background-color: #e9ecef; /* Light grey background */
+  color: #212529; /* Dark text color */
+  border: 1px solid #ced4da; /* Subtle border */
+  padding: 6px 10px;
+  border-radius: 5px; /* Slightly rounded corners for buttons */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.accessibility-controls button:hover {
+  background-color: #dee2e6; /* Slightly darker on hover */
+  border-color: #adb5bd;
+}
+
+/* Responsive adjustments for nav-controls if needed */
+@media (max-width: 992px) { /* Example breakpoint, adjust as needed */
+  .nav-controls {
+    margin-left: 0; /* Reset margin for smaller screens */
+    margin-top: 10px; /* Add space if it wraps below nav links */
+    width: 100%; /* Make it full width if it wraps */
+    justify-content: space-between; /* Distribute space if wrapped */
+  }
+  .search-container {
+    flex-grow: 1; /* Allow search to take more space if needed */
+  }
 }
 
 /* Section styles */

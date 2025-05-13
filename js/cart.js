@@ -341,7 +341,7 @@ class ShoppingCart {
 
   checkout() {
     if (this.items.length === 0) {
-      alert("Votre panier est vide.");
+      alert("Votre panier est vide. 1");
       return;
     }
     
@@ -464,7 +464,7 @@ function checkout() {
     const items = getCartItems();
     
     if (items.length === 0) {
-      alert('Votre panier est vide.');
+      alert('Votre panier est vide. 2');
       return;
     }
     

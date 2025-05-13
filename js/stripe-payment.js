@@ -205,7 +205,7 @@ const stripePayment = (function() {
     e.preventDefault();
     
     if (cartItems.length === 0) {
-      alert('Votre panier est vide.');
+      alert('Votre panier est vide. 3');
       return;
     }
     
